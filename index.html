@@ -507,52 +507,45 @@
 
   <div class="save-toast" id="saveToast">✓ تم الحفظ · Saved</div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, doc, setDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getStorage, ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+
 /* ============================================================
-   AL WANEES THURSDAY CALENDAR
+   AL WANEES THURSDAY CALENDAR — Firebase backend
    First initiative: 4 June 2026
    Admin password: 1234
    Approver: Fouzia Altayer
    ============================================================ */
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBftmMg8dZlmYOCYPkJzkfmG2w3E0a5NaY",
+  authDomain: "khamis-alwanees.firebaseapp.com",
+  projectId: "khamis-alwanees",
+  storageBucket: "khamis-alwanees.firebasestorage.app",
+  messagingSenderId: "1072866163260",
+  appId: "1:1072866163260:web:3b541c273be98c9f376139",
+  measurementId: "G-EFFVGEZ050"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const storage = getStorage(app);
+
 const FIRST_INITIATIVE = "2026-06-04";
 const ADMIN_PASSWORD   = "1234";
 const APPROVER_NAME_AR = "فوزية الطاير";
 const APPROVER_NAME_EN = "Fouzia Altayer";
-const STORAGE_KEY      = "alwanees_thursday_v1";
 
-const initiativeData = {
-  "2026-06-04": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-06-11": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-06-18": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-06-25": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-07-02": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-07-09": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-07-16": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-07-23": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-07-30": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-08-06": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-08-13": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-08-20": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-08-27": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-09-03": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-09-10": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-09-17": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-09-24": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-10-01": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-10-08": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-10-15": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-10-22": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-10-29": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-11-05": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-11-12": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-11-19": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-11-26": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-12-03": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-12-10": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-12-17": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-12-24": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
-  "2026-12-31": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] }
+// Default content per Thursday — used if Firestore has no entry yet
+const DEFAULT_EVENT = {
+  titleAr: "فعالية الخميس الونيس",
+  titleEn: "Al Wanees Thursday Activity",
+  descAr: "اكتب وصف الفعالية هنا.",
+  descEn: "Add the activity description here.",
+  budget: "",
+  photos: [],
+  approved: false
 };
 
 const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
@@ -566,54 +559,52 @@ let viewMonth = 5; // June
 let isAdmin = false;
 let currentIso = null;
 let currentDate = null;
-let userEdits = {};
+let cloudData = {}; // mirror of Firestore "events" collection
 
-function loadEdits() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) userEdits = JSON.parse(raw) || {};
-  } catch (e) { userEdits = {}; }
+function parseISO(s) { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); }
+const firstInitDate = parseISO(FIRST_INITIATIVE);
+function isoFor(y, m, d) { return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+function isSameDate(a, b) { return a.getFullYear()===b.getFullYear() && a.getMonth()===b.getMonth() && a.getDate()===b.getDate(); }
+
+function getEventData(iso) {
+  const saved = cloudData[iso] || {};
+  return {
+    titleAr: saved.titleAr !== undefined ? saved.titleAr : DEFAULT_EVENT.titleAr,
+    titleEn: saved.titleEn !== undefined ? saved.titleEn : DEFAULT_EVENT.titleEn,
+    descAr:  saved.descAr  !== undefined ? saved.descAr  : DEFAULT_EVENT.descAr,
+    descEn:  saved.descEn  !== undefined ? saved.descEn  : DEFAULT_EVENT.descEn,
+    budget:  saved.budget  !== undefined ? saved.budget  : DEFAULT_EVENT.budget,
+    photos:  Array.isArray(saved.photos) ? saved.photos  : DEFAULT_EVENT.photos,
+    approved: !!saved.approved
+  };
 }
-function saveEditsToStorage() {
+
+async function saveEvent(iso, partial) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(userEdits));
+    await setDoc(doc(db, "events", iso), partial, { merge: true });
     return true;
   } catch (e) {
-    alert("⚠️ تعذر الحفظ. قد تكون مساحة التخزين ممتلئة (الصور كبيرة).\nCould not save. Storage may be full (photos too large).");
+    console.error(e);
+    alert("⚠️ تعذر الحفظ — تحقق من الاتصال بالإنترنت.\nCould not save — check internet connection.\n\n" + e.message);
     return false;
   }
 }
 
-function parseISO(s) {
-  const [y, m, d] = s.split("-").map(Number);
-  return new Date(y, m - 1, d);
-}
-const firstInitDate = parseISO(FIRST_INITIATIVE);
-
-function isoFor(year, monthIdx, day) {
-  return `${year}-${String(monthIdx + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
-}
-function isSameDate(a, b) {
-  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
-}
-function getEventData(iso) {
-  const base = initiativeData[iso] || { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] };
-  const edits = userEdits[iso] || {};
-  return {
-    titleAr: edits.titleAr !== undefined ? edits.titleAr : base.titleAr,
-    titleEn: edits.titleEn !== undefined ? edits.titleEn : base.titleEn,
-    descAr:  edits.descAr  !== undefined ? edits.descAr  : base.descAr,
-    descEn:  edits.descEn  !== undefined ? edits.descEn  : base.descEn,
-    photos:  edits.photos  !== undefined ? edits.photos  : (base.photos || []),
-    budget:  edits.budget  !== undefined ? edits.budget  : (base.budget || ""),
-    approved: !!edits.approved
-  };
-}
-function setEdit(iso, field, value) {
-  if (!userEdits[iso]) userEdits[iso] = {};
-  userEdits[iso][field] = value;
+// ---------- Realtime listener ----------
+function setupListener() {
+  onSnapshot(collection(db, "events"), (snap) => {
+    const next = {};
+    snap.forEach(d => { next[d.id] = d.data(); });
+    cloudData = next;
+    renderCalendar();
+    if (currentIso) renderModalContent();
+  }, (err) => {
+    console.error("Firestore listener error:", err);
+    showToast("⚠️ خطأ في الاتصال · Connection error");
+  });
 }
 
+// ---------- Calendar render ----------
 function renderWeekdays() {
   const w = document.getElementById("weekdays");
   w.innerHTML = "";
@@ -641,19 +632,19 @@ function renderCalendar() {
   for (let i = 0; i < 42; i++) {
     const dayCell = document.createElement("div");
     dayCell.className = "day";
-
     let dayNum, cellDate, otherMonth = false;
+
     if (i < startOffset) {
       dayNum = daysInPrev - startOffset + i + 1;
-      const prevMonth = viewMonth === 0 ? 11 : viewMonth - 1;
-      const prevYear  = viewMonth === 0 ? viewYear - 1 : viewYear;
-      cellDate = new Date(prevYear, prevMonth, dayNum);
+      const pm = viewMonth === 0 ? 11 : viewMonth - 1;
+      const py = viewMonth === 0 ? viewYear - 1 : viewYear;
+      cellDate = new Date(py, pm, dayNum);
       otherMonth = true;
     } else if (i >= startOffset + daysInMonth) {
       dayNum = i - startOffset - daysInMonth + 1;
-      const nextMonth = viewMonth === 11 ? 0 : viewMonth + 1;
-      const nextYear  = viewMonth === 11 ? viewYear + 1 : viewYear;
-      cellDate = new Date(nextYear, nextMonth, dayNum);
+      const nm = viewMonth === 11 ? 0 : viewMonth + 1;
+      const ny = viewMonth === 11 ? viewYear + 1 : viewYear;
+      cellDate = new Date(ny, nm, dayNum);
       otherMonth = true;
     } else {
       dayNum = i - startOffset + 1;
@@ -663,30 +654,25 @@ function renderCalendar() {
     dayCell.textContent = dayNum;
     if (otherMonth) dayCell.classList.add("other-month");
 
-    const isThursday = cellDate.getDay() === 4;
-
-    if (isThursday && !otherMonth) {
+    if (cellDate.getDay() === 4 && !otherMonth) {
       dayCell.classList.add("thursday");
       if (cellDate >= firstInitDate) {
         dayCell.classList.remove("thursday");
         dayCell.classList.add("active");
         const iso = isoFor(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
-        dayCell.dataset.date = iso;
         if (getEventData(iso).approved) dayCell.classList.add("approved");
         dayCell.addEventListener("click", () => openModal(iso, cellDate));
       }
     }
-
     if (isSameDate(cellDate, today) && !otherMonth) dayCell.classList.add("today");
-
     daysEl.appendChild(dayCell);
   }
 }
 
+// ---------- Modal ----------
 function openModal(iso, date) {
   currentIso = iso;
   currentDate = date;
-
   const modal = document.getElementById("modal");
   modal.classList.toggle("admin-mode", isAdmin);
 
@@ -696,7 +682,6 @@ function openModal(iso, date) {
   document.getElementById("modalDateAr").textContent = `${dayNameAr} · ${date.getDate()} ${MONTHS_AR[date.getMonth()]} ${date.getFullYear()}`;
 
   renderModalContent();
-
   document.getElementById("overlay").classList.add("open");
   document.body.style.overflow = "hidden";
 }
@@ -708,7 +693,6 @@ function renderModalContent() {
 
   const body = document.getElementById("modalBody");
   body.innerHTML = "";
-
   if (isAdmin) renderAdminView(body, data);
   else renderPublicView(body, data);
 }
@@ -722,7 +706,6 @@ function renderPublicView(body, data) {
   body.querySelector(".desc-ar").textContent = data.descAr;
   body.querySelector(".desc-en").textContent = data.descEn;
 
-  // Budget (only if set)
   if (data.budget && Number(data.budget) > 0) {
     const formatted = Number(data.budget).toLocaleString('en-US');
     body.insertAdjacentHTML("beforeend", `
@@ -755,11 +738,8 @@ function renderPublicView(body, data) {
         </button>
       </div>
     `);
-    document.getElementById("publicApproveBtn").addEventListener("click", () => {
-      setEdit(currentIso, "approved", true);
-      if (saveEditsToStorage()) {
-        renderCalendar();
-        renderModalContent();
+    document.getElementById("publicApproveBtn").addEventListener("click", async () => {
+      if (await saveEvent(currentIso, { approved: true })) {
         showToast(`✓ معتمد من ${APPROVER_NAME_AR}`);
       }
     });
@@ -805,8 +785,7 @@ function renderAdminView(body, data) {
 
   renderPhotos(data.photos, true);
 
-  const actionRow = document.getElementById("actionRow");
-  actionRow.innerHTML = `
+  document.getElementById("actionRow").innerHTML = `
     <button class="action-btn btn-save" id="saveBtn">💾 حفظ · Save</button>
     ${data.approved
       ? `<button class="action-btn btn-unapprove" id="resetBtn">↺ إعادة تعيين الاعتماد · Reset Approval</button>`
@@ -839,10 +818,10 @@ function renderPhotos(photos, adminMode) {
       img.loading = "lazy";
       img.onerror = function() {
         wrap.innerHTML = '<div class="photo-placeholder"><div class="ph-icon">📷</div><div class="ph-ar">صورة غير متوفرة</div><div class="ph-en">Image unavailable</div></div>';
-        if (adminMode) addDeleteBtn(wrap, idx);
+        if (adminMode) addDeleteBtn(wrap, idx, url);
       };
       wrap.appendChild(img);
-      if (adminMode) addDeleteBtn(wrap, idx);
+      if (adminMode) addDeleteBtn(wrap, idx, url);
       grid.appendChild(wrap);
     });
     container.appendChild(grid);
@@ -860,40 +839,28 @@ function renderPhotos(photos, adminMode) {
   }
 }
 
-function addDeleteBtn(wrap, idx) {
+function addDeleteBtn(wrap, idx, url) {
   const del = document.createElement("button");
   del.className = "photo-delete";
   del.textContent = "✕";
   del.setAttribute("aria-label", "Delete photo");
-  del.addEventListener("click", (e) => {
+  del.addEventListener("click", async (e) => {
     e.stopPropagation();
     const data = getEventData(currentIso);
     const updated = [...data.photos];
     updated.splice(idx, 1);
-    setEdit(currentIso, "photos", updated);
-    saveEditsToStorage();
-    renderPhotos(updated, true);
+    if (await saveEvent(currentIso, { photos: updated })) {
+      // Best-effort delete from Storage (don't block UI on failure)
+      try { await deleteObject(ref(storage, url)); } catch (_) {}
+      showToast("✓ تم الحذف · Deleted");
+    }
   });
   wrap.appendChild(del);
 }
 
-function handlePhotoUpload(e) {
-  const files = Array.from(e.target.files || []);
-  if (!files.length) return;
-  Promise.all(files.map(compressImage)).then((dataUrls) => {
-    const current = getEventData(currentIso).photos || [];
-    const updated = [...current, ...dataUrls];
-    setEdit(currentIso, "photos", updated);
-    if (saveEditsToStorage()) {
-      renderPhotos(updated, true);
-      showToast("✓ تم رفع الصور · Photos uploaded");
-    }
-  });
-  e.target.value = "";
-}
-
-function compressImage(file) {
-  return new Promise((resolve) => {
+// ---------- Photo upload via Firebase Storage ----------
+function compressImageToBlob(file) {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
@@ -904,37 +871,65 @@ function compressImage(file) {
         const canvas = document.createElement("canvas");
         canvas.width = width; canvas.height = height;
         canvas.getContext("2d").drawImage(img, 0, 0, width, height);
-        resolve(canvas.toDataURL("image/jpeg", 0.82));
+        canvas.toBlob((b) => b ? resolve(b) : reject(new Error("toBlob failed")), "image/jpeg", 0.82);
       };
-      img.onerror = () => resolve(e.target.result);
+      img.onerror = reject;
       img.src = e.target.result;
     };
+    reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
-function handleSave() {
-  setEdit(currentIso, "titleAr", document.getElementById("editTitleAr").value.trim());
-  setEdit(currentIso, "titleEn", document.getElementById("editTitleEn").value.trim());
-  setEdit(currentIso, "descAr",  document.getElementById("editDescAr").value);
-  setEdit(currentIso, "descEn",  document.getElementById("editDescEn").value);
+async function uploadOnePhoto(blob, iso) {
+  const filename = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}.jpg`;
+  const storageRef = ref(storage, `events/${iso}/${filename}`);
+  await uploadBytes(storageRef, blob);
+  return await getDownloadURL(storageRef);
+}
+
+async function handlePhotoUpload(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  e.target.value = "";
+
+  showToast("⏳ جاري الرفع · Uploading...");
+  try {
+    const blobs = await Promise.all(files.map(compressImageToBlob));
+    const urls  = await Promise.all(blobs.map(b => uploadOnePhoto(b, currentIso)));
+    const current = getEventData(currentIso).photos || [];
+    const updated = [...current, ...urls];
+    if (await saveEvent(currentIso, { photos: updated })) {
+      showToast("✓ تم رفع الصور · Photos uploaded");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("⚠️ فشل رفع الصور\nPhoto upload failed.\n\n" + err.message);
+  }
+}
+
+// ---------- Save / Approve / Logout ----------
+async function handleSave() {
   const budgetVal = document.getElementById("editBudget").value.trim();
-  setEdit(currentIso, "budget",  budgetVal === "" ? "" : Number(budgetVal));
-  if (saveEditsToStorage()) {
-    const data = getEventData(currentIso);
-    document.getElementById("modalTitleAr").textContent = data.titleAr;
-    document.getElementById("modalTitleEn").textContent = data.titleEn;
+  const partial = {
+    titleAr: document.getElementById("editTitleAr").value.trim(),
+    titleEn: document.getElementById("editTitleEn").value.trim(),
+    descAr:  document.getElementById("editDescAr").value,
+    descEn:  document.getElementById("editDescEn").value,
+    budget:  budgetVal === "" ? "" : Number(budgetVal)
+  };
+  if (await saveEvent(currentIso, partial)) {
+    document.getElementById("modalTitleAr").textContent = partial.titleAr;
+    document.getElementById("modalTitleEn").textContent = partial.titleEn;
     showToast("✓ تم الحفظ · Saved");
   }
 }
 
-function handleApproveToggle() {
+async function handleApproveToggle() {
   const data = getEventData(currentIso);
-  setEdit(currentIso, "approved", !data.approved);
-  if (saveEditsToStorage()) {
-    renderCalendar();
-    renderModalContent();
-    showToast(data.approved ? "↺ تم إعادة التعيين · Reset" : `✓ معتمد من ${APPROVER_NAME_AR}`);
+  const newState = !data.approved;
+  if (await saveEvent(currentIso, { approved: newState })) {
+    showToast(newState ? `✓ معتمد من ${APPROVER_NAME_AR}` : "↺ تم إعادة التعيين · Reset");
   }
 }
 
@@ -962,7 +957,6 @@ function closeModal() {
 
 function openAdminOverlay() {
   if (isAdmin) {
-    // Already logged in — tapping the FAB logs out instantly
     isAdmin = false;
     document.getElementById("adminFab").classList.remove("unlocked");
     document.getElementById("adminBadge").classList.remove("show");
@@ -995,6 +989,7 @@ function tryAdminLogin() {
   }
 }
 
+// ---------- Event listeners ----------
 document.getElementById("prevBtn").addEventListener("click", () => {
   viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; }
   renderCalendar();
@@ -1013,7 +1008,6 @@ document.addEventListener("keydown", (e) => {
     else if (document.getElementById("overlay").classList.contains("open")) closeModal();
   }
 });
-
 document.getElementById("adminFab").addEventListener("click", openAdminOverlay);
 document.getElementById("adminCancelBtn").addEventListener("click", closeAdminOverlay);
 document.getElementById("adminLoginBtn").addEventListener("click", tryAdminLogin);
@@ -1024,9 +1018,11 @@ document.getElementById("adminOverlay").addEventListener("click", (e) => {
   if (e.target.id === "adminOverlay") closeAdminOverlay();
 });
 
-loadEdits();
+// ---------- Init ----------
 renderWeekdays();
 renderCalendar();
+setupListener();
 </script>
+
 </body>
 </html>
