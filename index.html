@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="ar" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#FFC93C">
+<title>الخميس الونيس | Al Wanees Thursday</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: "Geeza Pro", "Noto Sans Arabic", "Tajawal", "Segoe UI Arabic", "Tahoma", system-ui, -apple-system, sans-serif;
+    background-color: #F4ECD8;
+    background-image:
+      radial-gradient(rgba(60, 40, 20, 0.07) 1px, transparent 1px),
+      radial-gradient(rgba(60, 40, 20, 0.04) 1px, transparent 1px);
+    background-size: 22px 22px, 11px 11px;
+    background-position: 0 0, 11px 11px;
+    color: #2D2620;
+    min-height: 100vh;
+    padding: 20px 16px 80px;
+    overflow-x: hidden;
+    line-height: 1.5;
+  }
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(255, 201, 60, 0.18), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container { position: relative; max-width: 480px; margin: 0 auto; z-index: 1; }
+
+  .header { text-align: center; padding: 24px 8px 20px; position: relative; }
+  .title-wrap { position: relative; display: inline-block; padding: 8px 28px 18px; }
+  .brush { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+  .title {
+    position: relative; z-index: 1;
+    font-size: clamp(44px, 12vw, 64px);
+    font-weight: 900; color: #2D2620;
+    letter-spacing: 0.5px; line-height: 1.1;
+    transform: rotate(-1.5deg);
+    text-shadow: 2px 2px 0 rgba(255, 201, 60, 0.5), -1px -1px 0 rgba(255,255,255,0.3);
+  }
+  .subtitle-ar { margin-top: 18px; font-size: 17px; font-weight: 600; color: #5A4A35; }
+  .subtitle-en {
+    margin-top: 4px; font-size: 12px; font-weight: 500; color: #8B7B65;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    font-family: Georgia, "Times New Roman", serif; font-style: italic;
+  }
+
+  .deco-dot { position: absolute; background: #FFC93C; border-radius: 50%; z-index: 0; }
+  .deco-dot.d1 { width: 10px; height: 10px; top: 22px; left: 12%; }
+  .deco-dot.d2 { width: 6px; height: 6px; top: 56px; right: 10%; background: #E89A1F; }
+  .deco-dot.d3 { width: 8px; height: 8px; top: 12px; right: 22%; }
+  .deco-dot.d4 { width: 5px; height: 5px; top: 70px; left: 16%; background: #E89A1F; }
+
+  .calendar-card {
+    background: #FFFDF8; border-radius: 22px;
+    box-shadow: 0 4px 0 rgba(60, 40, 20, 0.08), 0 18px 40px -12px rgba(60, 40, 20, 0.18), 0 0 0 1px rgba(60, 40, 20, 0.04);
+    padding: 18px 14px 22px; margin-top: 14px;
+  }
+
+  .month-nav { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 16px; }
+  .nav-btn {
+    width: 44px; height: 44px; border: none; border-radius: 14px;
+    background: #FBF3DF; color: #2D2620; font-size: 22px; font-weight: bold;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: transform 0.15s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nav-btn:hover, .nav-btn:focus { background: #FFE9A6; outline: none; }
+  .nav-btn:active { transform: scale(0.92); background: #FFC93C; }
+
+  .month-title { text-align: center; flex: 1; padding: 0 8px; }
+  .month-en { font-size: 19px; font-weight: 700; color: #2D2620; letter-spacing: 0.5px; }
+  .month-ar { font-size: 14px; color: #8B7B65; margin-top: 2px; font-weight: 600; }
+
+  .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; padding: 0 2px 8px; }
+  .weekday {
+    text-align: center; font-size: 11px; font-weight: 700; color: #8B7B65;
+    letter-spacing: 0.5px; text-transform: uppercase; padding: 6px 0;
+  }
+  .weekday.thu-col { color: #C99000; }
+
+  .days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .day {
+    aspect-ratio: 1 / 1; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 600; color: #2D2620;
+    border-radius: 12px; background: transparent; position: relative;
+    -webkit-tap-highlight-color: transparent; user-select: none;
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+  .day.other-month { color: #C9BFA8; font-weight: 500; }
+  .day.thursday { color: #8A6500; background: #FFF4D2; border: 1.5px dashed #E8C868; }
+  .day.active {
+    background: linear-gradient(160deg, #FFD662 0%, #FFC93C 60%, #F5B30E 100%);
+    color: #2D2620; border: none; cursor: pointer; font-weight: 800;
+    box-shadow: 0 2px 0 #C99000, 0 6px 14px -4px rgba(245, 179, 14, 0.55);
+  }
+  .day.active::after {
+    content: ""; position: absolute; bottom: 5px;
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #2D2620; opacity: 0.6;
+  }
+  .day.active.approved::after { background: #2E7D32; opacity: 1; }
+  .day.active:hover { transform: translateY(-2px); }
+  .day.active:active { transform: translateY(0) scale(0.95); }
+  .day.today { box-shadow: 0 0 0 2px #2D2620, 0 2px 0 #C99000, 0 6px 14px -4px rgba(245, 179, 14, 0.55); }
+  .day.today:not(.active) { box-shadow: 0 0 0 2px #2D2620; }
+
+  .legend {
+    display: flex; justify-content: center; gap: 14px;
+    margin-top: 18px; padding-top: 14px;
+    border-top: 1px dashed #E5DCC2;
+    flex-wrap: wrap; font-size: 11px; color: #5A4A35;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-swatch { width: 14px; height: 14px; border-radius: 5px; }
+  .sw-active { background: linear-gradient(160deg, #FFD662, #F5B30E); }
+  .sw-thu { background: #FFF4D2; border: 1.5px dashed #E8C868; }
+  .sw-today { background: transparent; border: 2px solid #2D2620; }
+
+  .footnote { text-align: center; margin-top: 22px; font-size: 12px; color: #8B7B65; line-height: 1.7; }
+  .footnote .ar { font-size: 13px; color: #5A4A35; }
+
+  /* Admin FAB */
+  .admin-fab {
+    position: fixed; bottom: 18px; right: 18px;
+    width: 48px; height: 48px; border-radius: 50%;
+    border: none; background: rgba(45, 38, 32, 0.72); color: #FFC93C;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; z-index: 50;
+    box-shadow: 0 6px 18px -4px rgba(0,0,0,0.3);
+    transition: all 0.25s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .admin-fab:hover { background: #2D2620; }
+  .admin-fab:active { transform: scale(0.92); }
+  .admin-fab svg { width: 20px; height: 20px; }
+  .admin-fab.unlocked {
+    background: linear-gradient(160deg, #FFD662, #F5B30E);
+    color: #2D2620;
+    box-shadow: 0 6px 18px -4px rgba(245, 179, 14, 0.6);
+  }
+  .admin-badge {
+    position: fixed; bottom: 22px; right: 76px;
+    background: #2D2620; color: #FFC93C;
+    padding: 6px 12px; border-radius: 20px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    z-index: 50; display: none;
+  }
+  .admin-badge.show { display: block; }
+
+  /* Popup */
+  .overlay {
+    position: fixed; inset: 0;
+    background: rgba(45, 38, 32, 0.55);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 16px; opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease; z-index: 100;
+  }
+  .overlay.open { opacity: 1; pointer-events: auto; }
+
+  .modal {
+    background: #FFFDF8; width: 100%; max-width: 440px; max-height: 90vh;
+    border-radius: 24px; overflow: hidden;
+    transform: translateY(20px) scale(0.96);
+    transition: transform 0.3s cubic-bezier(.2,.9,.3,1.2);
+    display: flex; flex-direction: column;
+    box-shadow: 0 30px 60px -10px rgba(0,0,0,0.4);
+  }
+  .overlay.open .modal { transform: translateY(0) scale(1); }
+
+  .modal-header {
+    position: relative;
+    background: linear-gradient(135deg, #FFD662 0%, #FFC93C 60%, #F5B30E 100%);
+    padding: 20px 56px 18px 20px; color: #2D2620;
+  }
+  .modal-date { font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; opacity: 0.75; font-family: Georgia, serif; font-style: italic; }
+  .modal-date-ar { font-size: 13px; font-weight: 600; margin-top: 2px; opacity: 0.8; }
+  .modal-title-ar { font-size: 24px; font-weight: 900; margin-top: 6px; line-height: 1.2; }
+  .modal-title-en { font-size: 13px; font-weight: 600; margin-top: 4px; opacity: 0.85; font-family: Georgia, serif; font-style: italic; }
+
+  .close-btn {
+    position: absolute; top: 14px; right: 14px;
+    width: 38px; height: 38px; border: none; border-radius: 12px;
+    background: rgba(45, 38, 32, 0.12); color: #2D2620;
+    font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .close-btn:hover { background: rgba(45, 38, 32, 0.22); }
+  .close-btn:active { transform: scale(0.92); }
+
+  .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+
+  .section-label {
+    font-size: 11px; font-weight: 800; text-transform: uppercase;
+    letter-spacing: 2px; color: #C99000; margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-label::after {
+    content: ""; flex: 1; height: 1px;
+    background: linear-gradient(to right, #E8C868, transparent);
+  }
+
+  .desc-ar { font-size: 16px; color: #2D2620; line-height: 1.7; margin-bottom: 14px; white-space: pre-wrap; }
+  .desc-en { font-size: 14px; color: #6B5A45; line-height: 1.6; font-family: Georgia, serif; margin-bottom: 22px; white-space: pre-wrap; }
+
+  .approved-seal {
+    margin: 8px 0 22px; padding: 14px 16px;
+    background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+    border: 2px dashed #4CAF50; border-radius: 14px;
+    display: flex; align-items: center; gap: 12px;
+    position: relative; overflow: hidden;
+  }
+  .approved-seal::before {
+    content: ""; position: absolute; top: -20px; right: -20px;
+    width: 60px; height: 60px;
+    background: rgba(76, 175, 80, 0.1); border-radius: 50%;
+  }
+  .approved-icon {
+    width: 36px; height: 36px; background: #4CAF50;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 18px; font-weight: bold; flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(76, 175, 80, 0.4);
+  }
+  .approved-text { flex: 1; }
+  .approved-text .ar { font-size: 14px; font-weight: 700; color: #1B5E20; }
+  .approved-text .en { font-size: 11px; color: #2E7D32; font-style: italic; font-family: Georgia, serif; margin-top: 1px; }
+
+  /* Budget card */
+  .budget-card {
+    margin: 0 0 22px;
+    padding: 14px 16px;
+    background: linear-gradient(135deg, #FFFBEE 0%, #FFF4D2 100%);
+    border: 1.5px solid #F0E0B5;
+    border-radius: 14px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .budget-icon {
+    width: 38px; height: 38px;
+    background: linear-gradient(160deg, #FFD662, #F5B30E);
+    border-radius: 10px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px;
+    box-shadow: 0 2px 4px rgba(245, 179, 14, 0.3);
+  }
+  .budget-text { flex: 1; }
+  .budget-label {
+    font-size: 10px; font-weight: 800; color: #8A6500;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .budget-value {
+    font-size: 18px; font-weight: 800; color: #2D2620;
+    margin-top: 2px;
+  }
+  .budget-value .currency {
+    font-size: 12px; font-weight: 600; color: #8B7B65;
+    font-family: Georgia, serif; margin-right: 4px;
+  }
+
+  .photo-section { margin-top: 6px; }
+  .photo-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 10px; }
+  .photo { aspect-ratio: 1 / 1; border-radius: 14px; overflow: hidden; background: #F4ECD8; position: relative; }
+  .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .photo-delete {
+    position: absolute; top: 6px; right: 6px;
+    width: 26px; height: 26px; border: none; border-radius: 50%;
+    background: rgba(45, 38, 32, 0.85); color: white;
+    font-size: 14px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .photo-placeholder {
+    aspect-ratio: 1 / 1; border-radius: 14px;
+    background: #FBF3DF; border: 2px dashed #E8C868;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #8B7B65; font-size: 11px; text-align: center; padding: 10px; gap: 4px;
+  }
+  .photo-placeholder .ph-icon { font-size: 26px; margin-bottom: 4px; }
+  .photo-placeholder .ph-ar { font-size: 12px; color: #5A4A35; font-weight: 600; }
+  .photo-placeholder .ph-en { font-size: 10px; letter-spacing: 1px; font-style: italic; }
+
+  /* Admin edit mode */
+  .admin-edit-bar {
+    background: #2D2620; color: #FFC93C;
+    padding: 8px 20px; font-size: 11px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase; text-align: center;
+    display: none;
+  }
+  .modal.admin-mode .admin-edit-bar { display: block; }
+
+  .edit-field {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid #E5DCC2; border-radius: 12px;
+    background: #FBF7EC; font-family: inherit; font-size: 15px;
+    color: #2D2620; margin-bottom: 10px; resize: vertical;
+    transition: border-color 0.2s ease;
+  }
+  .edit-field:focus { outline: none; border-color: #FFC93C; background: #FFFDF8; }
+  textarea.edit-field { min-height: 80px; line-height: 1.6; }
+
+  .upload-btn {
+    width: 100%; padding: 14px;
+    border: 2px dashed #E8C868; border-radius: 14px;
+    background: #FFFBEE; color: #8A6500;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    cursor: pointer; margin-top: 10px; margin-bottom: 12px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    transition: background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .upload-btn:hover { background: #FFF4D2; }
+  .upload-btn:active { transform: scale(0.98); }
+
+  .action-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px dashed #E5DCC2;
+  }
+  .action-btn {
+    padding: 14px; border: none; border-radius: 14px;
+    font-family: inherit; font-size: 14px; font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s ease, background 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-save { background: linear-gradient(160deg, #FFD662, #F5B30E); color: #2D2620; box-shadow: 0 3px 0 #C99000; }
+  .btn-save:active { transform: translateY(2px); box-shadow: 0 1px 0 #C99000; }
+  .btn-approve { background: linear-gradient(160deg, #66BB6A, #43A047); color: white; box-shadow: 0 3px 0 #2E7D32; }
+  .btn-approve:active { transform: translateY(2px); box-shadow: 0 1px 0 #2E7D32; }
+  .btn-unapprove { background: linear-gradient(160deg, #EF5350, #E53935); color: white; box-shadow: 0 3px 0 #B71C1C; }
+  .btn-unapprove:active { transform: translateY(2px); box-shadow: 0 1px 0 #B71C1C; }
+  .btn-logout {
+    grid-column: 1 / -1;
+    background: #2D2620; color: #FFC93C;
+    box-shadow: 0 3px 0 #000;
+  }
+  .btn-logout:active { transform: translateY(2px); box-shadow: 0 1px 0 #000; }
+
+  /* Public-view approve button */
+  .approve-row { margin: 6px 0 22px; }
+  .btn-approve-public {
+    width: 100%; padding: 16px;
+    border: none; border-radius: 14px;
+    background: linear-gradient(160deg, #66BB6A, #43A047);
+    color: white; font-family: inherit;
+    font-size: 15px; font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #2E7D32;
+    transition: transform 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+  }
+  .btn-approve-public:active { transform: translateY(2px); box-shadow: 0 1px 0 #2E7D32; }
+  .btn-approve-public .check {
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+  }
+
+  .save-toast {
+    position: fixed; bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #2D2620; color: #FFC93C;
+    padding: 12px 20px; border-radius: 14px;
+    font-size: 13px; font-weight: 700;
+    opacity: 0; pointer-events: none;
+    transition: all 0.3s ease;
+    z-index: 200;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .save-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .login-modal { max-width: 340px; padding: 28px 24px 24px; text-align: center; }
+  .login-icon {
+    width: 60px; height: 60px; margin: 0 auto 14px;
+    background: linear-gradient(160deg, #FFD662, #F5B30E);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #2D2620;
+  }
+  .login-icon svg { width: 28px; height: 28px; }
+  .login-title-ar { font-size: 20px; font-weight: 900; color: #2D2620; }
+  .login-title-en { font-size: 12px; color: #8B7B65; letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; font-family: Georgia, serif; font-style: italic; }
+  .login-input {
+    width: 100%; margin: 20px 0 14px; padding: 14px;
+    border: 1.5px solid #E5DCC2; border-radius: 14px;
+    background: #FBF7EC; font-family: inherit; font-size: 18px;
+    text-align: center; letter-spacing: 8px; color: #2D2620;
+  }
+  .login-input:focus { outline: none; border-color: #FFC93C; }
+  .login-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .login-err { color: #C62828; font-size: 12px; font-weight: 600; margin-bottom: 8px; min-height: 16px; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .header, .calendar-card, .footnote { animation: fadeUp 0.6s cubic-bezier(.2,.9,.3,1) both; }
+  .calendar-card { animation-delay: 0.1s; }
+  .footnote { animation-delay: 0.2s; }
+
+  @media (max-width: 360px) {
+    body { padding: 16px 10px 80px; }
+    .calendar-card { padding: 14px 10px 18px; }
+    .day { font-size: 14px; }
+    .weekday { font-size: 10px; }
+    .nav-btn { width: 40px; height: 40px; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <span class="deco-dot d1"></span>
+      <span class="deco-dot d2"></span>
+      <span class="deco-dot d3"></span>
+      <span class="deco-dot d4"></span>
+
+      <div class="title-wrap">
+        <svg class="brush" viewBox="0 0 400 130" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <filter id="rough">
+              <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="2" seed="3"/>
+              <feDisplacementMap in="SourceGraphic" scale="6"/>
+            </filter>
+          </defs>
+          <path d="M18,72 C70,40 140,32 210,46 C290,62 340,52 388,68 C394,82 388,98 372,104 C300,118 220,108 150,114 C100,118 50,116 22,108 C8,100 8,84 18,72 Z" fill="#FFC93C" filter="url(#rough)" opacity="0.92"/>
+          <path d="M30,86 C90,72 180,76 250,84 C310,90 350,86 376,92" stroke="#E89A1F" stroke-width="3" fill="none" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <h1 class="title">الخميس الونيس</h1>
+      </div>
+
+      <div class="subtitle-ar">رزنامة فعاليات الخميس الونيس</div>
+      <div class="subtitle-en">Al Wanees Thursday Initiative Calendar</div>
+    </div>
+
+    <div class="calendar-card">
+      <div class="month-nav">
+        <button class="nav-btn" id="prevBtn" aria-label="Previous month">‹</button>
+        <div class="month-title">
+          <div class="month-en" id="monthEn"></div>
+          <div class="month-ar" id="monthAr"></div>
+        </div>
+        <button class="nav-btn" id="nextBtn" aria-label="Next month">›</button>
+      </div>
+
+      <div class="weekdays" id="weekdays"></div>
+      <div class="days" id="days"></div>
+
+      <div class="legend">
+        <div class="legend-item"><span class="legend-swatch sw-active"></span><span>فعالية / Event</span></div>
+        <div class="legend-item"><span class="legend-swatch sw-thu"></span><span>خميس / Thursday</span></div>
+        <div class="legend-item"><span class="legend-swatch sw-today"></span><span>اليوم / Today</span></div>
+      </div>
+    </div>
+
+    <div class="footnote">
+      <div class="ar">انقر على الخميس المُلوَّن لرؤية تفاصيل الفعالية</div>
+      <div>Tap any highlighted Thursday to see event details</div>
+    </div>
+  </div>
+
+  <div class="admin-badge" id="adminBadge">ADMIN · إدارة</div>
+  <button class="admin-fab" id="adminFab" aria-label="Admin Login">
+    <svg id="lockIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2V6a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v3H9V6a3 3 0 0 1 3-3z"/></svg>
+  </button>
+
+  <div class="overlay" id="overlay" role="dialog" aria-modal="true">
+    <div class="modal" id="modal">
+      <div class="admin-edit-bar">✎ وضع التحرير · Edit Mode</div>
+      <div class="modal-header">
+        <button class="close-btn" id="closeBtn" aria-label="Close">✕</button>
+        <div class="modal-date" id="modalDateEn"></div>
+        <div class="modal-date-ar" id="modalDateAr"></div>
+        <div class="modal-title-ar" id="modalTitleAr"></div>
+        <div class="modal-title-en" id="modalTitleEn"></div>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <div class="overlay" id="adminOverlay" role="dialog" aria-modal="true">
+    <div class="modal login-modal">
+      <div class="login-icon">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 1a5 5 0 0 0-5 5v3H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-2V6a5 5 0 0 0-5-5zm0 2a3 3 0 0 1 3 3v3H9V6a3 3 0 0 1 3-3z"/></svg>
+      </div>
+      <div class="login-title-ar">وضع الإدارة</div>
+      <div class="login-title-en">Admin Mode</div>
+      <input type="password" id="adminPassword" class="login-input" placeholder="••••" inputmode="numeric" maxlength="20" autocomplete="off">
+      <div class="login-err" id="loginErr"></div>
+      <div class="login-actions">
+        <button class="action-btn btn-save" id="adminLoginBtn">دخول · Login</button>
+        <button class="action-btn" id="adminCancelBtn" style="background:#FBF3DF;color:#2D2620;">إلغاء · Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="save-toast" id="saveToast">✓ تم الحفظ · Saved</div>
+
+<script>
+/* ============================================================
+   AL WANEES THURSDAY CALENDAR
+   First initiative: 4 June 2026
+   Admin password: 1234
+   Approver: Fouzia Altayer
+   ============================================================ */
+
+const FIRST_INITIATIVE = "2026-06-04";
+const ADMIN_PASSWORD   = "1234";
+const APPROVER_NAME_AR = "فوزية الطاير";
+const APPROVER_NAME_EN = "Fouzia Altayer";
+const STORAGE_KEY      = "alwanees_thursday_v1";
+
+const initiativeData = {
+  "2026-06-04": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-06-11": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-06-18": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-06-25": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-07-02": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-07-09": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-07-16": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-07-23": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-07-30": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-08-06": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-08-13": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-08-20": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-08-27": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-09-03": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-09-10": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-09-17": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-09-24": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-10-01": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-10-08": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-10-15": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-10-22": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-10-29": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-11-05": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-11-12": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-11-19": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-11-26": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-12-03": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-12-10": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-12-17": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-12-24": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] },
+  "2026-12-31": { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] }
+};
+
+const MONTHS_EN = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const MONTHS_AR = ["يناير","فبراير","مارس","أبريل","مايو","يونيو","يوليو","أغسطس","سبتمبر","أكتوبر","نوفمبر","ديسمبر"];
+const DAYS_EN_SHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
+const DAYS_EN_FULL  = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const DAYS_AR_FULL  = ["الاثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"];
+
+let viewYear  = 2026;
+let viewMonth = 5; // June
+let isAdmin = false;
+let currentIso = null;
+let currentDate = null;
+let userEdits = {};
+
+function loadEdits() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) userEdits = JSON.parse(raw) || {};
+  } catch (e) { userEdits = {}; }
+}
+function saveEditsToStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(userEdits));
+    return true;
+  } catch (e) {
+    alert("⚠️ تعذر الحفظ. قد تكون مساحة التخزين ممتلئة (الصور كبيرة).\nCould not save. Storage may be full (photos too large).");
+    return false;
+  }
+}
+
+function parseISO(s) {
+  const [y, m, d] = s.split("-").map(Number);
+  return new Date(y, m - 1, d);
+}
+const firstInitDate = parseISO(FIRST_INITIATIVE);
+
+function isoFor(year, monthIdx, day) {
+  return `${year}-${String(monthIdx + 1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
+}
+function isSameDate(a, b) {
+  return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+}
+function getEventData(iso) {
+  const base = initiativeData[iso] || { titleAr: "فعالية الخميس الونيس", titleEn: "Al Wanees Thursday Activity", descAr: "اكتب وصف الفعالية هنا.", descEn: "Add the activity description here.", photos: [] };
+  const edits = userEdits[iso] || {};
+  return {
+    titleAr: edits.titleAr !== undefined ? edits.titleAr : base.titleAr,
+    titleEn: edits.titleEn !== undefined ? edits.titleEn : base.titleEn,
+    descAr:  edits.descAr  !== undefined ? edits.descAr  : base.descAr,
+    descEn:  edits.descEn  !== undefined ? edits.descEn  : base.descEn,
+    photos:  edits.photos  !== undefined ? edits.photos  : (base.photos || []),
+    budget:  edits.budget  !== undefined ? edits.budget  : (base.budget || ""),
+    approved: !!edits.approved
+  };
+}
+function setEdit(iso, field, value) {
+  if (!userEdits[iso]) userEdits[iso] = {};
+  userEdits[iso][field] = value;
+}
+
+function renderWeekdays() {
+  const w = document.getElementById("weekdays");
+  w.innerHTML = "";
+  DAYS_EN_SHORT.forEach((d, i) => {
+    const el = document.createElement("div");
+    el.className = "weekday" + (i === 3 ? " thu-col" : "");
+    el.textContent = d;
+    w.appendChild(el);
+  });
+}
+
+function renderCalendar() {
+  document.getElementById("monthEn").textContent = `${MONTHS_EN[viewMonth]} ${viewYear}`;
+  document.getElementById("monthAr").textContent = `${MONTHS_AR[viewMonth]} ${viewYear}`;
+
+  const daysEl = document.getElementById("days");
+  daysEl.innerHTML = "";
+
+  const firstOfMonth = new Date(viewYear, viewMonth, 1);
+  const startOffset = (firstOfMonth.getDay() + 6) % 7;
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const daysInPrev  = new Date(viewYear, viewMonth, 0).getDate();
+  const today = new Date();
+
+  for (let i = 0; i < 42; i++) {
+    const dayCell = document.createElement("div");
+    dayCell.className = "day";
+
+    let dayNum, cellDate, otherMonth = false;
+    if (i < startOffset) {
+      dayNum = daysInPrev - startOffset + i + 1;
+      const prevMonth = viewMonth === 0 ? 11 : viewMonth - 1;
+      const prevYear  = viewMonth === 0 ? viewYear - 1 : viewYear;
+      cellDate = new Date(prevYear, prevMonth, dayNum);
+      otherMonth = true;
+    } else if (i >= startOffset + daysInMonth) {
+      dayNum = i - startOffset - daysInMonth + 1;
+      const nextMonth = viewMonth === 11 ? 0 : viewMonth + 1;
+      const nextYear  = viewMonth === 11 ? viewYear + 1 : viewYear;
+      cellDate = new Date(nextYear, nextMonth, dayNum);
+      otherMonth = true;
+    } else {
+      dayNum = i - startOffset + 1;
+      cellDate = new Date(viewYear, viewMonth, dayNum);
+    }
+
+    dayCell.textContent = dayNum;
+    if (otherMonth) dayCell.classList.add("other-month");
+
+    const isThursday = cellDate.getDay() === 4;
+
+    if (isThursday && !otherMonth) {
+      dayCell.classList.add("thursday");
+      if (cellDate >= firstInitDate) {
+        dayCell.classList.remove("thursday");
+        dayCell.classList.add("active");
+        const iso = isoFor(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+        dayCell.dataset.date = iso;
+        if (getEventData(iso).approved) dayCell.classList.add("approved");
+        dayCell.addEventListener("click", () => openModal(iso, cellDate));
+      }
+    }
+
+    if (isSameDate(cellDate, today) && !otherMonth) dayCell.classList.add("today");
+
+    daysEl.appendChild(dayCell);
+  }
+}
+
+function openModal(iso, date) {
+  currentIso = iso;
+  currentDate = date;
+
+  const modal = document.getElementById("modal");
+  modal.classList.toggle("admin-mode", isAdmin);
+
+  const dayName = DAYS_EN_FULL[(date.getDay() + 6) % 7];
+  const dayNameAr = DAYS_AR_FULL[(date.getDay() + 6) % 7];
+  document.getElementById("modalDateEn").textContent = `${dayName} · ${date.getDate()} ${MONTHS_EN[date.getMonth()]} ${date.getFullYear()}`;
+  document.getElementById("modalDateAr").textContent = `${dayNameAr} · ${date.getDate()} ${MONTHS_AR[date.getMonth()]} ${date.getFullYear()}`;
+
+  renderModalContent();
+
+  document.getElementById("overlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+}
+
+function renderModalContent() {
+  const data = getEventData(currentIso);
+  document.getElementById("modalTitleAr").textContent = data.titleAr;
+  document.getElementById("modalTitleEn").textContent = data.titleEn;
+
+  const body = document.getElementById("modalBody");
+  body.innerHTML = "";
+
+  if (isAdmin) renderAdminView(body, data);
+  else renderPublicView(body, data);
+}
+
+function renderPublicView(body, data) {
+  body.insertAdjacentHTML("beforeend", `
+    <div class="section-label">الوصف · Description</div>
+    <div class="desc-ar"></div>
+    <div class="desc-en"></div>
+  `);
+  body.querySelector(".desc-ar").textContent = data.descAr;
+  body.querySelector(".desc-en").textContent = data.descEn;
+
+  // Budget (only if set)
+  if (data.budget && Number(data.budget) > 0) {
+    const formatted = Number(data.budget).toLocaleString('en-US');
+    body.insertAdjacentHTML("beforeend", `
+      <div class="budget-card">
+        <div class="budget-icon">💰</div>
+        <div class="budget-text">
+          <div class="budget-label">الميزانية · Budget</div>
+          <div class="budget-value"><span class="currency">AED</span>${formatted}</div>
+        </div>
+      </div>
+    `);
+  }
+
+  if (data.approved) {
+    body.insertAdjacentHTML("beforeend", `
+      <div class="approved-seal">
+        <div class="approved-icon">✓</div>
+        <div class="approved-text">
+          <div class="ar">معتمد من ${APPROVER_NAME_AR}</div>
+          <div class="en">Approved by ${APPROVER_NAME_EN}</div>
+        </div>
+      </div>
+    `);
+  } else {
+    body.insertAdjacentHTML("beforeend", `
+      <div class="approve-row">
+        <button class="btn-approve-public" id="publicApproveBtn">
+          <span class="check">✓</span>
+          <span>اعتماد الفعالية · Approve Event</span>
+        </button>
+      </div>
+    `);
+    document.getElementById("publicApproveBtn").addEventListener("click", () => {
+      setEdit(currentIso, "approved", true);
+      if (saveEditsToStorage()) {
+        renderCalendar();
+        renderModalContent();
+        showToast(`✓ معتمد من ${APPROVER_NAME_AR}`);
+      }
+    });
+  }
+
+  body.insertAdjacentHTML("beforeend", `
+    <div class="photo-section">
+      <div class="section-label">الصور · Photos</div>
+      <div id="photoContainer"></div>
+    </div>
+  `);
+  renderPhotos(data.photos, false);
+}
+
+function renderAdminView(body, data) {
+  body.insertAdjacentHTML("beforeend", `
+    <div class="section-label">العنوان · Title</div>
+    <input type="text" class="edit-field" id="editTitleAr" placeholder="العنوان بالعربي">
+    <input type="text" class="edit-field" id="editTitleEn" placeholder="Title in English">
+
+    <div class="section-label" style="margin-top:14px;">الوصف · Description</div>
+    <textarea class="edit-field" id="editDescAr" placeholder="الوصف بالعربي"></textarea>
+    <textarea class="edit-field" id="editDescEn" placeholder="Description in English"></textarea>
+
+    <div class="section-label" style="margin-top:14px;">الميزانية · Budget (AED)</div>
+    <input type="number" class="edit-field" id="editBudget" placeholder="0" min="0" step="100" inputmode="numeric">
+
+    <div class="section-label" style="margin-top:14px;">الصور · Photos</div>
+    <div id="photoContainer"></div>
+    <input type="file" id="photoInput" accept="image/*" multiple style="display:none;">
+    <button class="upload-btn" id="uploadBtn">
+      <span>📷</span><span>إضافة صور · Add Photos</span>
+    </button>
+
+    <div class="action-row" id="actionRow"></div>
+  `);
+
+  document.getElementById("editTitleAr").value = data.titleAr;
+  document.getElementById("editTitleEn").value = data.titleEn;
+  document.getElementById("editDescAr").value = data.descAr;
+  document.getElementById("editDescEn").value = data.descEn;
+  document.getElementById("editBudget").value = data.budget || "";
+
+  renderPhotos(data.photos, true);
+
+  const actionRow = document.getElementById("actionRow");
+  actionRow.innerHTML = `
+    <button class="action-btn btn-save" id="saveBtn">💾 حفظ · Save</button>
+    ${data.approved
+      ? `<button class="action-btn btn-unapprove" id="resetBtn">↺ إعادة تعيين الاعتماد · Reset Approval</button>`
+      : `<button class="action-btn btn-approve" id="resetBtn">✓ اعتماد · Approve</button>`
+    }
+    <button class="action-btn btn-logout" id="logoutBtn">🔒 تسجيل الخروج · Logout Admin</button>
+  `;
+
+  document.getElementById("uploadBtn").addEventListener("click", () => document.getElementById("photoInput").click());
+  document.getElementById("photoInput").addEventListener("change", handlePhotoUpload);
+  document.getElementById("saveBtn").addEventListener("click", handleSave);
+  document.getElementById("resetBtn").addEventListener("click", handleApproveToggle);
+  document.getElementById("logoutBtn").addEventListener("click", handleLogout);
+}
+
+function renderPhotos(photos, adminMode) {
+  const container = document.getElementById("photoContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  if (photos && photos.length > 0) {
+    const grid = document.createElement("div");
+    grid.className = "photo-grid";
+    photos.forEach((url, idx) => {
+      const wrap = document.createElement("div");
+      wrap.className = "photo";
+      const img = document.createElement("img");
+      img.src = url;
+      img.alt = "Event photo";
+      img.loading = "lazy";
+      img.onerror = function() {
+        wrap.innerHTML = '<div class="photo-placeholder"><div class="ph-icon">📷</div><div class="ph-ar">صورة غير متوفرة</div><div class="ph-en">Image unavailable</div></div>';
+        if (adminMode) addDeleteBtn(wrap, idx);
+      };
+      wrap.appendChild(img);
+      if (adminMode) addDeleteBtn(wrap, idx);
+      grid.appendChild(wrap);
+    });
+    container.appendChild(grid);
+  } else {
+    const grid = document.createElement("div");
+    grid.className = "photo-grid";
+    const count = adminMode ? 2 : 4;
+    for (let i = 0; i < count; i++) {
+      const ph = document.createElement("div");
+      ph.className = "photo-placeholder";
+      ph.innerHTML = '<div class="ph-icon">📷</div><div class="ph-ar">سيتم إضافة الصور هنا</div><div class="ph-en">Photos will be added here</div>';
+      grid.appendChild(ph);
+    }
+    container.appendChild(grid);
+  }
+}
+
+function addDeleteBtn(wrap, idx) {
+  const del = document.createElement("button");
+  del.className = "photo-delete";
+  del.textContent = "✕";
+  del.setAttribute("aria-label", "Delete photo");
+  del.addEventListener("click", (e) => {
+    e.stopPropagation();
+    const data = getEventData(currentIso);
+    const updated = [...data.photos];
+    updated.splice(idx, 1);
+    setEdit(currentIso, "photos", updated);
+    saveEditsToStorage();
+    renderPhotos(updated, true);
+  });
+  wrap.appendChild(del);
+}
+
+function handlePhotoUpload(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files.length) return;
+  Promise.all(files.map(compressImage)).then((dataUrls) => {
+    const current = getEventData(currentIso).photos || [];
+    const updated = [...current, ...dataUrls];
+    setEdit(currentIso, "photos", updated);
+    if (saveEditsToStorage()) {
+      renderPhotos(updated, true);
+      showToast("✓ تم رفع الصور · Photos uploaded");
+    }
+  });
+  e.target.value = "";
+}
+
+function compressImage(file) {
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 1200;
+        let { width, height } = img;
+        if (width > maxW) { height = (height * maxW) / width; width = maxW; }
+        const canvas = document.createElement("canvas");
+        canvas.width = width; canvas.height = height;
+        canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      img.onerror = () => resolve(e.target.result);
+      img.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function handleSave() {
+  setEdit(currentIso, "titleAr", document.getElementById("editTitleAr").value.trim());
+  setEdit(currentIso, "titleEn", document.getElementById("editTitleEn").value.trim());
+  setEdit(currentIso, "descAr",  document.getElementById("editDescAr").value);
+  setEdit(currentIso, "descEn",  document.getElementById("editDescEn").value);
+  const budgetVal = document.getElementById("editBudget").value.trim();
+  setEdit(currentIso, "budget",  budgetVal === "" ? "" : Number(budgetVal));
+  if (saveEditsToStorage()) {
+    const data = getEventData(currentIso);
+    document.getElementById("modalTitleAr").textContent = data.titleAr;
+    document.getElementById("modalTitleEn").textContent = data.titleEn;
+    showToast("✓ تم الحفظ · Saved");
+  }
+}
+
+function handleApproveToggle() {
+  const data = getEventData(currentIso);
+  setEdit(currentIso, "approved", !data.approved);
+  if (saveEditsToStorage()) {
+    renderCalendar();
+    renderModalContent();
+    showToast(data.approved ? "↺ تم إعادة التعيين · Reset" : `✓ معتمد من ${APPROVER_NAME_AR}`);
+  }
+}
+
+function handleLogout() {
+  isAdmin = false;
+  document.getElementById("adminFab").classList.remove("unlocked");
+  document.getElementById("adminBadge").classList.remove("show");
+  closeModal();
+  showToast("تم تسجيل الخروج · Logged out");
+}
+
+function showToast(msg) {
+  const t = document.getElementById("saveToast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => t.classList.remove("show"), 2200);
+}
+
+function closeModal() {
+  document.getElementById("overlay").classList.remove("open");
+  document.body.style.overflow = "";
+  currentIso = null; currentDate = null;
+}
+
+function openAdminOverlay() {
+  if (isAdmin) {
+    // Already logged in — tapping the FAB logs out instantly
+    isAdmin = false;
+    document.getElementById("adminFab").classList.remove("unlocked");
+    document.getElementById("adminBadge").classList.remove("show");
+    showToast("تم تسجيل الخروج · Logged out");
+    return;
+  }
+  document.getElementById("adminPassword").value = "";
+  document.getElementById("loginErr").textContent = "";
+  document.getElementById("adminOverlay").classList.add("open");
+  document.body.style.overflow = "hidden";
+  setTimeout(() => document.getElementById("adminPassword").focus(), 100);
+}
+
+function closeAdminOverlay() {
+  document.getElementById("adminOverlay").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+function tryAdminLogin() {
+  const pw = document.getElementById("adminPassword").value;
+  if (pw === ADMIN_PASSWORD) {
+    isAdmin = true;
+    document.getElementById("adminFab").classList.add("unlocked");
+    document.getElementById("adminBadge").classList.add("show");
+    closeAdminOverlay();
+    showToast("✓ وضع الإدارة مفعّل · Admin mode active");
+  } else {
+    document.getElementById("loginErr").textContent = "كلمة المرور غير صحيحة · Wrong password";
+    document.getElementById("adminPassword").value = "";
+  }
+}
+
+document.getElementById("prevBtn").addEventListener("click", () => {
+  viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; }
+  renderCalendar();
+});
+document.getElementById("nextBtn").addEventListener("click", () => {
+  viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; }
+  renderCalendar();
+});
+document.getElementById("closeBtn").addEventListener("click", closeModal);
+document.getElementById("overlay").addEventListener("click", (e) => {
+  if (e.target.id === "overlay") closeModal();
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") {
+    if (document.getElementById("adminOverlay").classList.contains("open")) closeAdminOverlay();
+    else if (document.getElementById("overlay").classList.contains("open")) closeModal();
+  }
+});
+
+document.getElementById("adminFab").addEventListener("click", openAdminOverlay);
+document.getElementById("adminCancelBtn").addEventListener("click", closeAdminOverlay);
+document.getElementById("adminLoginBtn").addEventListener("click", tryAdminLogin);
+document.getElementById("adminPassword").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") tryAdminLogin();
+});
+document.getElementById("adminOverlay").addEventListener("click", (e) => {
+  if (e.target.id === "adminOverlay") closeAdminOverlay();
+});
+
+loadEdits();
+renderWeekdays();
+renderCalendar();
+</script>
+</body>
+</html>
